@@ -1,6 +1,6 @@
-import type { ArtistId } from "./value-objects/ArtistId"
-import type { ArtistName } from "./value-objects/ArtistName"
-import type { ArtistPictureUrl } from "./value-objects/ArtistPictureUrl"
+import type { ArtistId } from "./value-objects/ArtistId/ArtistId"
+import type { ArtistName } from "./value-objects/ArtistName/ArtistName"
+import type { ArtistPictureUrl } from "./value-objects/ArtistPictureUrl/ArtistPictureUrl"
 
 export class Artist {
   readonly id: ArtistId
