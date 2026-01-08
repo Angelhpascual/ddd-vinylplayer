@@ -1,110 +1,106 @@
 import { useState } from "react"
 import "./App.css"
 import { useTrackSearch } from "./hooks/useTrackSearch"
+import { PlayerScene } from "./contexts/MusicPlayer/ui/scenes/PlayerScene"
+import { usePlayerStore } from "./contexts/MusicPlayer/ui/store/usePlayerStore"
 
 function App() {
   const { tracks, loading, error, search } = useTrackSearch()
   const [query, setQuery] = useState("")
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const playTrack = usePlayerStore((s) => s.play)
+  const currentTrack = usePlayerStore((s) => s.currentTrack)
+  const stop = usePlayerStore((s) => s.stop)
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    search(query)
+    if (query.trim()) search(query)
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-8 font-sans">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="mb-12 text-center">
-          <h1 className="text-5xl font-bold bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent mb-4">
-            Deezer DDD Player
-          </h1>
-          <p className="text-slate-400">Arquitectura limpia, sonido sucio</p>
-        </header>
-        {/* Search Bar */}
-        <form
-          onSubmit={handleSubmit}
-          className="flex gap-4 justify-center mb-16"
-        >
+    <div className="min-h-screen bg-slate-900 text-white font-sans overflow-hidden">
+      {/* HEADER */}
+      <header className="fixed top-0 left-0 right-0 h-20 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-between px-8 border-b border-white/5">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+          Deezer DDD Player
+        </h1>
+        <form onSubmit={handleSubmit} className="flex gap-4">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Busca tu vinilo favorito..."
-            className="w-full max-w-md px-6 py-4 rounded-full bg-slate-800 border border-slate-700 text-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all placeholder:text-slate-500"
+            placeholder="Busca..."
+            className="bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-pink-500 w-64 text-white"
           />
           <button
             type="submit"
             disabled={loading}
-            className="px-8 py-4 rounded-full bg-pink-600 hover:bg-pink-500 disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all shadow-lg hover:shadow-pink-500/25"
+            className="text-sm font-bold text-pink-500 hover:text-pink-400"
           >
-            {loading ? "Buscando..." : "Buscar"}
+            {loading ? "..." : "BUSCAR"}
           </button>
         </form>
-        {/* Error State */}
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-8 text-center">
-            {error}
-          </div>
-        )}
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {tracks.map((track) => (
-            <div
-              key={track.id.value} // Acceso a VO
-              className="group bg-slate-800/50 hover:bg-slate-800 p-4 rounded-2xl transition-all hover:-translate-y-2 hover:shadow-xl border border-white/5"
-            >
-              {/* Cover Image */}
-              <div className="relative aspect-square mb-4 overflow-hidden rounded-xl shadow-lg">
-                <img
-                  src={track.coverUrl.value} // Acceso a VO
-                  alt={track.title.value}
-                  className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
-                />
-                {/* Play Button Overlay (Visual only for now) */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                  <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center pl-1 shadow-xl">
-                    ▶
+      </header>
+
+      {/* BODY SPLIT */}
+      <div className="flex h-screen pt-20">
+        {/* IZQUIERDA: RESULTADOS */}
+        <div className="w-1/2 p-8 overflow-y-auto pb-32">
+          {error && <div className="text-red-400 mb-4">{error}</div>}
+
+          <h2 className="text-xl font-bold mb-6 text-slate-400">
+            Biblioteca de Discos
+          </h2>
+
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+            {tracks.map((track) => (
+              <div
+                key={track.id.value}
+                onClick={() => playTrack(track)}
+                className="group bg-slate-800/50 hover:bg-slate-800 p-3 rounded-xl cursor-pointer transition-all border border-white/5 active:scale-95"
+              >
+                <div className="aspect-square rounded-lg overflow-hidden mb-3 relative">
+                  <img
+                    src={track.coverUrl.value}
+                    className="w-full h-full object-cover"
+                    alt={track.title.value}
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <span className="text-2xl">▶</span>
                   </div>
                 </div>
-              </div>
-              {/* Track Info */}
-              <div className="space-y-1">
                 <h3
-                  className="font-bold text-lg truncate"
+                  className="font-bold truncate text-sm"
                   title={track.title.value}
                 >
                   {track.title.value}
                 </h3>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full overflow-hidden bg-slate-600">
-                    <img
-                      src={track.artist.pictureUrl.value}
-                      alt={track.artist.name.value}
-                    />
-                  </div>
-                  <p className="text-slate-400 text-sm truncate">
-                    {track.artist.name.value}
-                  </p>
-                </div>
+                <p className="text-xs text-slate-400 truncate">
+                  {track.artist.name.value}
+                </p>
               </div>
-              {/* Native Audio (Temporal, luego será el vinilo) */}
-              <audio
-                controls
-                src={track.streamUrl.value}
-                className="w-full mt-4 h-8 opacity-50 hover:opacity-100 transition-opacity"
-              />
+            ))}
+          </div>
+
+          {!loading && tracks.length === 0 && (
+            <div className="text-center text-slate-600 mt-20">
+              Usa el buscador de arriba (Ej: Daft Punk)
             </div>
-          ))}
+          )}
         </div>
 
-        {/* Empty State */}
-        {!loading && tracks.length === 0 && query && (
-          <div className="text-center text-slate-500 mt-12">
-            No se encontraron vinilos para esa búsqueda.
+        {/* DERECHA: REPRODUCTOR 3D */}
+        <div className="w-1/2 bg-slate-950 border-l border-white/5 relative flex flex-col">
+          <div className="absolute inset-0">
+            <PlayerScene />
           </div>
-        )}
+        </div>
       </div>
+
+      {/* AUDIO INVISIBLE */}
+      {currentTrack && (
+        <audio src={currentTrack.streamUrl.value} autoPlay onEnded={stop} />
+      )}
     </div>
   )
 }
