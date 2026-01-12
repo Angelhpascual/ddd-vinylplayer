@@ -39,5 +39,9 @@ describe("usePlayerStore", () => {
     )
     const { play } = usePlayerStore.getState()
     play(track)
+
+    const state = usePlayerStore.getState()
+    expect(state.currentTrack).toBe(track)
+    expect(state.isPlaying).toBe(true)
   })
 })
