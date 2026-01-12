@@ -9,8 +9,6 @@ function App() {
   const [query, setQuery] = useState("")
 
   const playTrack = usePlayerStore((s) => s.play)
-  const currentTrack = usePlayerStore((s) => s.currentTrack)
-  const stop = usePlayerStore((s) => s.stop)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +19,7 @@ function App() {
     <div className="min-h-screen bg-slate-900 text-white font-sans overflow-hidden">
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 h-20 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-between px-8 border-b border-white/5">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
           Deezer DDD Player
         </h1>
         <form onSubmit={handleSubmit} className="flex gap-4">
@@ -57,7 +55,15 @@ function App() {
               <div
                 key={track.id.value}
                 onClick={() => playTrack(track)}
-                className="group bg-slate-800/50 hover:bg-slate-800 p-3 rounded-xl cursor-pointer transition-all border border-white/5 active:scale-95"
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(
+                    "application/json",
+                    JSON.stringify(track)
+                  )
+                  e.dataTransfer.effectAllowed = "copy"
+                }}
+                className="group bg-slate-800/50 hover:bg-slate-800 p-3 rounded-xl cursor-grab active:cursor-grabbing transition-all border border-white/5 active:scale-95"
               >
                 <div className="aspect-square rounded-lg overflow-hidden mb-3 relative">
                   <img
@@ -96,11 +102,6 @@ function App() {
           </div>
         </div>
       </div>
-
-      {/* AUDIO INVISIBLE */}
-      {currentTrack && (
-        <audio src={currentTrack.streamUrl.value} autoPlay onEnded={stop} />
-      )}
     </div>
   )
 }
