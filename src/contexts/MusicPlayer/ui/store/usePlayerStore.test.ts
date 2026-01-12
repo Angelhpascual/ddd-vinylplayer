@@ -12,6 +12,20 @@ import { ArtistId } from "../../domain/Artist/value-objects/ArtistId/ArtistId"
 import { ArtistName } from "../../domain/Artist/value-objects/ArtistName/ArtistName"
 import { ArtistPictureUrl } from "../../domain/Artist/value-objects/ArtistPictureUrl/ArtistPictureUrl"
 
+const createTrackStub = () =>
+  new Track(
+    new TrackId("1"),
+    new TrackTitle("Test"),
+    new TrackDuration(120),
+    new TrackStreamUrl("http://test.com/stream"),
+    new TrackCoverUrl("http://test.com/cover"),
+    new Artist(
+      new ArtistId("1"),
+      new ArtistName("Test"),
+      new ArtistPictureUrl("http://test.com/picture")
+    )
+  )
+
 describe("usePlayerStore", () => {
   beforeEach(() => {
     const { stop } = usePlayerStore.getState()
@@ -25,18 +39,34 @@ describe("usePlayerStore", () => {
   })
 
   it("Should play a track", () => {
-    const track = new Track(
-      new TrackId("1"),
-      new TrackTitle("Test"),
-      new TrackDuration(120),
-      new TrackStreamUrl("http://test.com/stream"),
-      new TrackCoverUrl("http://test.com/cover"),
-      new Artist(
-        new ArtistId("1"),
-        new ArtistName("Test"),
-        new ArtistPictureUrl("http://test.com/picture")
-      )
-    )
+    const track = createTrackStub()
+    const { play } = usePlayerStore.getState()
+    play(track)
+
+    const state = usePlayerStore.getState()
+    expect(state.currentTrack).toBe(track)
+    expect(state.isPlaying).toBe(true)
+  })
+  it("Should stop the player", () => {
+    const track = createTrackStub()
+    const { play } = usePlayerStore.getState()
+    play(track)
+
+    const state = usePlayerStore.getState()
+    expect(state.currentTrack).toBe(track)
+    expect(state.isPlaying).toBe(true)
+  })
+  it("Should pause the player", () => {
+    const track = createTrackStub()
+    const { play } = usePlayerStore.getState()
+    play(track)
+
+    const state = usePlayerStore.getState()
+    expect(state.currentTrack).toBe(track)
+    expect(state.isPlaying).toBe(true)
+  })
+  it("Should resume the player", () => {
+    const track = createTrackStub()
     const { play } = usePlayerStore.getState()
     play(track)
 
