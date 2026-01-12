@@ -49,29 +49,30 @@ describe("usePlayerStore", () => {
   })
   it("Should stop the player", () => {
     const track = createTrackStub()
-    const { play } = usePlayerStore.getState()
+    const { play, stop } = usePlayerStore.getState()
     play(track)
+    stop()
 
     const state = usePlayerStore.getState()
-    expect(state.currentTrack).toBe(track)
-    expect(state.isPlaying).toBe(true)
+    expect(state.currentTrack).toBeNull()
+    expect(state.isPlaying).toBe(false)
   })
   it("Should pause the player", () => {
     const track = createTrackStub()
-    const { play } = usePlayerStore.getState()
+    const { play, pause } = usePlayerStore.getState()
     play(track)
+    pause()
 
     const state = usePlayerStore.getState()
     expect(state.currentTrack).toBe(track)
-    expect(state.isPlaying).toBe(true)
+    expect(state.isPlaying).toBe(false)
   })
-  it("Should resume the player", () => {
-    const track = createTrackStub()
-    const { play } = usePlayerStore.getState()
-    play(track)
+  it("Should togglePlay the player", () => {
+    const { togglePlay } = usePlayerStore.getState()
+    togglePlay()
 
     const state = usePlayerStore.getState()
-    expect(state.currentTrack).toBe(track)
+    expect(state.currentTrack).toBeNull()
     expect(state.isPlaying).toBe(true)
   })
 })
