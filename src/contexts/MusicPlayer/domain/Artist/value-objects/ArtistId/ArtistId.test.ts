@@ -11,8 +11,6 @@ describe("ArtistId", () => {
     expect(artistId.value).toBe("1")
   })
   it("Should throw error if id is empty", () => {
-    expect(() => new ArtistId("")).toThrow(
-      "ArtistId must be at least 1 character long"
-    )
+    expect(() => new ArtistId("")).toThrow("ArtistId is required")
   })
 })

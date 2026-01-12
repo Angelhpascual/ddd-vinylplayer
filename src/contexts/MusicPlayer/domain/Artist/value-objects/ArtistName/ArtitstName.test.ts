@@ -11,8 +11,6 @@ describe("ArtistName", () => {
     expect(artistName.value).toBe("Artist Name")
   })
   it("Should throw error if name is empty", () => {
-    expect(() => new ArtistName("")).toThrow(
-      "ArtistName must be at least 1 character long"
-    )
+    expect(() => new ArtistName("")).toThrow("ArtistName is required")
   })
 })
