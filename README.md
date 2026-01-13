@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# 🎵 Deezer Spatial Vinyl Player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A next-generation music player combining a 2D discovery interface with an immersive 3D experience. Built following **Domain-Driven Design (DDD)** and **Hexagonal Architecture** principles.
 
-Currently, two official plugins are available:
+![Project Status](https://img.shields.io/badge/status-active-brightgreen)
+![Tech Stack](https://img.shields.io/badge/stack-React--Three--Vitest-blue)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🪐 The Experience
 
-## React Compiler
+This project is more than just a player; it's a spatial interaction. Users can search for tracks via the Deezer API and drag & drop them directly onto a 3D turntable to initiate playback.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Key Features:
 
-## Expanding the ESLint configuration
+- **🔍 Dynamic Search**: Real-time integration with the Deezer API.
+- **✨ 3D Drag & Drop**: Drag tracks from the DOM directly into a WebGL scene.
+- **💿 Technical Realism**: The vinyl rotates dynamically with the album cover (and yes, it rotates clockwise! 🕒).
+- **🛡️ Technical Shield**: Comprehensive test coverage across all layers.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏗️ Architecture (DDD)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The application follows a strict architecture to ensure scalability and maintainability:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **`domain`**: The heart of the business. Contains Entities (`Track`, `Artist`) and Value Objects (`TrackTitle`, `TrackDuration`, etc.) with intrinsic validations.
+- **`application`**: Use cases such as `TrackSearcher`, orchestrating the business logic.
+- **`infrastructure`**: Technical implementations like `DeezerApiTrackRepository` and data mappers.
+- **`ui`**: React components and 3D scenes using **React Three Fiber**.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠️ Tech Stack
+
+- **Core**: React 19 + TypeScript + Vite.
+- **3D**: Three.js + React Three Fiber + Drei.
+- **State**: Zustand (bridging the 2D and 3D worlds).
+- **Styling**: Tailwind CSS 4.
+- **Testing**: Vitest + Testing Library + Happy DOM.
+- **Package Manager**: Bun.
+
+## 🚀 Installation and Usage
+
+```bash
+# Install dependencies
+bun install
+
+# Run in development mode
+bun dev
+
+# Run the test suite
+bun test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧪 Testing Strategy
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The project features a robust testing pyramid:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Unit Tests**: Validation of business rules in Value Objects.
+- **Integration Tests**: Full flows from search to state updates in the Store.
+- **Mocking**: Total isolation from the Deezer API for fast and deterministic tests.
+
+---
+
+_Built with ❤️ by Angelhpascual as an advanced architecture exercise._
